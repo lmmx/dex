@@ -11,4 +11,7 @@ pkg_path = Path(*__path__)
 LIBRARY_PATH = pkg_path.parent.parent / "data" / "shelves"
 
 def load_library() -> None:
+    if not LIBRARY_PATH.exists():
+        err_msg = "Package daa directory handling in distributed package not yet set up"
+        raise NotImplementedError(err_msg)
     return
