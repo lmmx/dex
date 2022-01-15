@@ -1,7 +1,7 @@
 r"""
 :mod:`dex` is an index under construction"""
 
-from . import library
+from .library import load_library
 
 __all__ = ["library"]
 
