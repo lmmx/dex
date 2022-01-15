@@ -8,12 +8,12 @@ from git.exc import InvalidGitRepositoryError
 
 from . import __path__
 
-__all__ = ["get_shelves_path"]
+__all__ = ["shelves_path"]
 
 pkg_path = Path(*__path__)
 
 
-def get_shelves_path() -> Path:
+def _get_shelves_path() -> Path:
     """
     If the package is installed from the git repo, we can
     """
@@ -41,3 +41,8 @@ def get_shelves_path() -> Path:
             )
             raise NotImplementedError(err_msg)
     return shelves_path
+
+shelves_path = _get_shelves_path()
+
+if not shelves_path.exists():
+    raise FileNotFoundError("Internal error in library path resolution")
