@@ -1,9 +1,9 @@
 r"""
 :mod:`dex` is an index under construction"""
 
-# from . import x, y, z
+from . import library
 
-__all__ = []
+__all__ = ["library"]
 
 __author__ = "Louis Maddox"
 __license__ = "MIT"
