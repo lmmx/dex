@@ -9,8 +9,8 @@ Library index:
 
 ## TODO
 
-- Find how to get metadata from ISBN
-- Choose robust modern OCR method
+- [x] Find how to get metadata from ISBN
+- [ ] Choose robust modern OCR method
 
 ## Requires
 

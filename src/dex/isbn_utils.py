@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from isbnlib import Isbn, meta
+from isbnlib._exc import NotValidISBNError
+from dataclasses import dataclass
 
 
 def validate_isbn(isbn_code: str) -> bool:
