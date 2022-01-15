@@ -42,6 +42,7 @@ def _get_shelves_path() -> Path:
             raise NotImplementedError(err_msg)
     return shelves_path
 
+
 shelves_path = _get_shelves_path()
 
 if not shelves_path.exists():

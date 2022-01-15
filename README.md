@@ -7,6 +7,11 @@ Library index:
   - If installing from PyPI, you must set the `DEX_SHELVES` environment variable with a path to
     locate the source files
 
+## TODO
+
+- Find how to get metadata from ISBN
+- Choose robust modern OCR method
+
 ## Requires
 
 - Python 3.9+
