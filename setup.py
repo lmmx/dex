@@ -5,11 +5,11 @@ from setuptools import find_packages, setup
 
 ########################################################################################
 
-NAME = "dex"
+NAME = "spindex"
 PROJECT_URLS = {
-    #"Documentation": "https://dex.readthedocs.io/",
-    "Bug Tracker": "https://github.com/lmmx/dex/issues",
-    "Source Code": "https://github.com/lmmx/dex",
+    #"Documentation": f"https://{NAME}.readthedocs.io/",
+    "Bug Tracker": f"https://github.com/lmmx/dex/issues",
+    "Source Code": f"https://github.com/lmmx/dex",
 }
 CLASSIFIERS = [
     "Development Status :: 1 - Planning",
@@ -37,7 +37,7 @@ EXTRAS_REQUIRE["dev"] = (
 )
 PYTHON_REQUIRES = ">=3.9"
 LONG_DESCRIPTION = Path("README.md").read_text()
-PACKAGE_DATA = {"dex": ["py.typed"]}
+PACKAGE_DATA = {NAME: ["py.typed"]}
 
 ########################################################################################
 
@@ -53,7 +53,7 @@ def version_scheme(version):
 ########################################################################################
 
 
-META_PATH = Path(__file__).parent.absolute() / "src" / NAME / "__init__.py"
+META_PATH = Path(__file__).parent.absolute() / "src" / "dex" / "__init__.py"
 META_FILE = META_PATH.read_text()
 
 
