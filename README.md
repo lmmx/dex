@@ -24,3 +24,13 @@ pip install spindex
 
 > _dex_ is available from [PyPI](https://pypi.org/project/spindex), and
 > the code is on [GitHub](https://github.com/lmmx/dex)
+
+## Usage
+
+```py
+>>> import dex
+>>> dex.load_library()
+[INFO] Library contains 1 files
+[[LibraryItem(metadata='📖: Strang (2019) Linear Algebra And Learning From Data',
+archive_path=PosixPath('/home/louis/dev/dex/data/shelves/dex9780692196380.zip'))]]
+```
