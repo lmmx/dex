@@ -1,3 +1,6 @@
+dataclass-wizard
 GitPython
 more_itertools
+python-doctr
+torch
 tqdm

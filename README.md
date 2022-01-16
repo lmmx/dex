@@ -7,10 +7,10 @@ Library index:
   - If installing from PyPI, you must set the `DEX_SHELVES` environment variable with a path to
     locate the source files
 
-## TODO
+## Key features
 
-- [x] Find how to get metadata from ISBN
-- [ ] Choose robust modern OCR method
+- Reliable metadata handling from ISBN numbers
+- Robust modern OCR of book indexes from neural networks pretrained for document image analysis
 
 ## Requires
 
@@ -18,12 +18,29 @@ Library index:
 
 ## Installation
 
+> _dex_ is available from [PyPI](https://pypi.org/project/spindex), and
+> the code is on [GitHub](https://github.com/lmmx/dex)
+
+In theory you can install as follows:
+
 ```sh
 pip install spindex
 ```
 
-> _dex_ is available from [PyPI](https://pypi.org/project/spindex), and
-> the code is on [GitHub](https://github.com/lmmx/dex)
+In practice, the suggested installation is stored in `CONDA_SETUP.md`:
+
+```
+conda create -n dex "python=3.9"
+conda activate dex
+conda install -y pytorch torchvision cudatoolkit=11.3 -c pytorch
+pip install -r requirements.txt
+```
+
+For earlier versions of CUDA:
+```
+conda install -y "cudatoolkit<11.2" -c conda-forge
+conda install -y pytorch torchvision -c pytorch
+```
 
 ## Usage
 

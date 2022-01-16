@@ -8,6 +8,7 @@ from pathlib import Path
 from .isbn_utils import BookMetadata, get_isbn_metadata
 from .log_utils import Console
 from .multiproc_utils import batch_multiprocess_with_return
+from .ocr_utils import scan_text_in_images
 from .path_utils import shelves_path
 
 __all__ = ["load_library"]

@@ -1,5 +1,4 @@
 import multiprocessing as mp
-from functools import partial
 from multiprocessing import Pool, Process
 
 from more_itertools import chunked
@@ -45,7 +44,6 @@ def batch_multiprocess_with_return(
     if show_progress:
         iterator = tqdm(iterator, desc=tqdm_desc)
     for func_batch in iterator:
-        procs = []
         for f in func_batch:
             pool.apply_async(func=f, callback=pool_results.append)
     pool.close()
