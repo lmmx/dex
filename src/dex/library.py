@@ -79,9 +79,9 @@ class LibraryItem(IndexedItem):
         dewarp_funcs = [partial(dewarp_and_save, p) for p in item_images_to_dewarp]
         if dewarp_funcs:
             batch_multiprocess(dewarp_funcs)
-        dewarped_images = [
+        dewarped_images = sorted([
             dewarped_path(p) for p in item_images if has_been_dewarped(p)
-        ]
+        ]) # Sort so that the scanned results will also be sorted
         unfixed = [p for p in item_images if not has_been_dewarped(p)]
         if any(unfixed):
             logger.warning(f"Failed to dewarp all images for item {self.shelf.stem}")

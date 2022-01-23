@@ -78,8 +78,9 @@ To show a bit more, you can see there's a bit more work to be done in cleaning u
 the results are very promising:
 
 ```
+>>> import dex; l = dex.load_library(); i = l.items[0]; s = i.scan_images()
 >>> from pprint import pprint; pp = lambda p: pprint(p, sort_dicts=False)
->>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[2].blocks])
+>>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[0].blocks])
 [[['Index']],                            
  [['Accelerated', 'descent,', '352,353'],
   ['Accuracy,', '384'],         
