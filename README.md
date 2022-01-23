@@ -2,15 +2,13 @@
 
 Library index:
 
-- Data managed as ZIP files
+- Reliable metadata handling from ISBN numbers
+- Robust modern OCR of book indexes from neural networks pretrained for document image analysis
+- Data are managed as 'shelves':
   - If installing from a clone of the git repo, the files will be stored within the repo
   - If installing from PyPI, you must set the `DEX_SHELVES` environment variable with a path to
     locate the source files
 
-## Key features
-
-- Reliable metadata handling from ISBN numbers
-- Robust modern OCR of book indexes from neural networks pretrained for document image analysis
 
 ## Requires
 
@@ -63,3 +61,5 @@ Library of 1 book
 >>> l.items[0].metadata.first_author_surname
 'Strang'
 ```
+
+The next step is to scan the images in these directories.
