@@ -44,10 +44,22 @@ conda install -y pytorch torchvision -c pytorch
 
 ## Usage
 
+To prepare your library, photograph the index pages and store them in folders named by the ISBNs of
+the books. You then load your library metadata in `dex` like so:
+
 ```py
 >>> import dex
->>> dex.load_library()
-[INFO] Library contains 1 files
-[[LibraryItem(metadata='📖: Strang (2019) Linear Algebra And Learning From Data',
-archive_path=PosixPath('/home/louis/dev/dex/data/shelves/dex9780692196380.zip'))]]
+>>> l = dex.load_library()
+>>> l
+Library of 1 book
+>>> l.items
+[LibraryItem(metadata='📖: Strang (2019) Linear Algebra And Learning From Data', shelf_path=PosixPath('/home/louis/dev/dex/data/shelves/9780692196380'))]
+>>> l.items[0].metadata
+'📖: Strang (2019) Linear Algebra And Learning From Data'
+>>> l.items[0].metadata.title
+'Linear Algebra And Learning From Data'
+>>> l.items[0].metadata.first_author
+'Gilbert Strang'
+>>> l.items[0].metadata.first_author_surname
+'Strang'
 ```

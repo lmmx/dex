@@ -17,57 +17,53 @@ logger = Console(name=__name__).logger
 
 
 def load_library() -> Library:
-    pattern = "dex*.zip"
-    zipfiles = [*shelves_path.glob(pattern)]
-    lib = Library.from_zips(zipfiles)
+    shelf_dirs = list(filter(Path.is_dir, shelves_path.iterdir()))
+    lib = Library.from_shelves(shelf_dirs)
     return lib
 
 
-class Library(list):
-    def __init__(self, library_items: list[LibraryItem]):
-        if not library_items:
-            logger.info("Library is empty")
-        else:
-            logger.info(f"Library contains {len(library_items)} files")
-        self.append(library_items)
+@dataclass
+class Library:
+    items: list[LibraryItem]
+
+    def __repr__(self):
+        n = len(self.items)
+        return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
 
     @classmethod
-    def from_zips(cls, zipfiles: list[Path], parallel: bool = False):
+    def from_shelves(cls, shelf_dirs: list[Path], parallel: bool = False):
         if parallel:
-            zip_items = batch_multiprocess_with_return(
-                function_list=[partial(LibraryItem.from_zip, zf) for zf in zipfiles]
+            shelf_items = batch_multiprocess_with_return(
+                function_list=[partial(LibraryItem.from_shelf, sd) for sd in shelf_dirs]
             )
         else:
-            zip_items = [LibraryItem.from_zip(zf) for zf in zipfiles]
-        return cls(library_items=zip_items)
+            shelf_items = [LibraryItem.from_shelf(sd) for sd in shelf_dirs]
+        return cls(items=shelf_items)
 
 
 class IndexedItem:
     isbn_regex = r"[0-9]{10,13}"
 
     @property
-    def is_archived(self) -> bool:
-        return self.archive is not None
-
-    @classmethod
-    def from_isbn(cls, isbn_code: str, archive_path: Path | None = None) -> LibraryItem:
-        metadata = get_isbn_metadata(isbn_code)
-        return cls(metadata=metadata, archive_path=archive_path)
-
-    @classmethod
-    def from_zip(cls, zipfile: Path) -> LibraryItem:
-        suffixes = [".zip"]
-        if zipfile.suffix not in suffixes:
-            raise ValueError(f"{zipfile} not recognised as a ZIP file")
-        try:
-            isbn_code = next(re.finditer(cls.isbn_regex, zipfile.stem)).group()
-        except StopIteration:
-            logger.error(f"Could not detect ISBN in filename {zipfile.stem} (omitting)")
-        else:
-            return cls.from_isbn(isbn_code=isbn_code, archive_path=zipfile)
+    def is_shelved(self) -> bool:
+        return self.shelf is not None
 
 
 @dataclass
 class LibraryItem(IndexedItem):
     metadata: BookMetadata
-    archive_path: Path | None
+    shelf_path: Path | None
+
+    @classmethod
+    def from_isbn(cls, isbn_code: str, shelf_path: Path | None = None) -> LibraryItem:
+        metadata = get_isbn_metadata(isbn_code)
+        return cls(metadata=metadata, shelf_path=shelf_path)
+
+    @classmethod
+    def from_shelf(cls, shelf_dir: Path) -> LibraryItem:
+        try:
+            isbn_code = next(re.finditer(cls.isbn_regex, shelf_dir.stem)).group()
+        except StopIteration:
+            logger.error(f"Could not detect ISBN in filename {zipfile.stem} (omitting)")
+        else:
+            return cls.from_isbn(isbn_code=isbn_code, shelf_path=shelf_dir)
