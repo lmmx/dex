@@ -1,6 +1,7 @@
 dataclass-wizard
 GitPython
 more_itertools
+page-dewarp
 python-doctr
 torch
 tqdm

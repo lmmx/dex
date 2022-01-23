@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from dataclass_wizard import JSONWizard
+
+# from typing import Any
+
 
 __all__ = ["DocTreeDoc", "Page", "Block", "Line", "Word"]
 

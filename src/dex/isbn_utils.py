@@ -42,7 +42,6 @@ class MetaEnum(TitledEnum):
 
 def get_isbn_metadata(isbn_code: str) -> dict[str, str | list[str]]:
     book_metadata = meta(isbn_code)
-    # title, authors, year, isbn_13, publisher = map(book_metadata.get, MetaEnum.values())
     book_meta_kwargs = {
         name: book_metadata.get(value)
         for name, value in MetaEnum.names2values().items()

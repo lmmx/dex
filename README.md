@@ -63,3 +63,81 @@ Library of 1 book
 ```
 
 The next step is to scan the images in these directories.
+
+```py
+>>> i = items[0]
+>>> imgs = i.scan_images()
+>>> p1 = imgs.pages[0]
+>>> print(p1.page_idx) # 0
+>>> b1, b2, b3 = p1.blocks[0:3]
+>>> [w.value for w in b1.lines[0].words]
+['Index']
+```
+
+To show a bit more, you can see there's a bit more work to be done in cleaning up this output but
+the results are very promising:
+
+```
+>>> from pprint import pprint; pp = lambda p: pprint(p, sort_dicts=False)
+>>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[2].blocks])
+[[['Index']],                            
+ [['Accelerated', 'descent,', '352,353'],
+  ['Accuracy,', '384'],         
+  ['Activation,', 'iv,', '375,376'],          
+  ['AD,', '397'],             
+  ['ADAGRAD,', '366'],                         
+  ['ADAM,', '322,', '356,366'],   
+  ['Adaptive,', '407'],
+  ['Adaptive', 'descent,', '356,', '361'],
+  ['ADI', 'method,', '182'],
+  ['Adjacency', 'matrix,', '203,', '240,', '291'],
+  ['Adjoint', 'equation,', '405'],
+  ['Adjoint', 'methods,', '404'],
+  ['ADMM,', '99,', '185,', '187,', '188'],
+  ['Affine,', 'ili'],
+  ['AlexNet,', 'ix,', '373,415'],
+  ['Aliasing,', '234'],
+  ['AlphaGo', 'Zero,', '394,412'],
+  ['Alternating', 'direction,', '185,', '191'],
+  ['Alternating', 'minimization,', '97,', '106,', '199,']],
+ [['Averages,', '236,', '365'],
+  ['Back', 'substitution,', '25'],
+  ['Backpropagation,', '102,', '344,371,'],
+  ['Backslash,', '113,', '184'],
+  ['Backtracking,', '328,', '351'],
+  ['Backward', 'difference,', '123'],
+  ['Backward-mode,', '397'],
+  ['Banach', 'space,', '91'],
+  ['Banded,', '203,', '232'],
+  ['Bandpass', 'filter,', '233'],
+  ['Basis,', '4,', '5,', '15,204,', '239'],
+  ['Basis', 'pursuit,', '184,', '195'],
+  ['Batch', 'mode,', '361'],
+  ['Batch', 'normalization,', 'X,', '409,', '412'],
+  ['Bayes', 'Theorem,', '303'],
+  ['Bell-shaped', 'curve,', '279'],
+  ['Bernoulli,', '287'],
+  ['BFGS', 'quasi-Newton),', '165'],
+  ['Bias,', 'in,', '375'],
+  ['Bias-variance,', '374,', '412'],
+  ['Bidiagonal', 'matrix,', '120'],
+  ['Big', 'picture,', '14,', '18,', '31'],
+  ['Binomial,', '270,', '271,', '275,', '287'],
+  ['Binomial', 'theorem,', '385'],
+  ['Bipartite', 'graph,', '256,', '340'],
+  ['Block', 'Toeplitz,', '389'],
+  ['BLUE', 'theorem,', '308'],
+  ['Bootstrap,', '408'],
+  ['Boundary', 'condition,', '229'],
+  ['Bounded', 'variation,', '193,194'],
+  ['Bowl,', '49'],
+  ['Bregman', 'distance,', '192']],
+ [['252']],
+ [['Antisymmetric,', '52'],
+  ['Approximate', 'SVD,', '144,', '155'],
+  ['Approximation,', '384'],
+  ['Architecture,', '413'],
+  ['Argmin,', '186,', '322'],
+  ['Arnoldi,', '116,', '117'],
+  ['Artificial', 'intelligence,', '371'],
+```
