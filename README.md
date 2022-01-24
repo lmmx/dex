@@ -9,6 +9,16 @@ Library index:
   - If installing from PyPI, you must set the `DEX_SHELVES` environment variable with a path to
     locate the source files
 
+Further handling of the data remains to be done:
+- [ ] Clean up errors in the transcription (punctuation etc.) as far as possible
+  - Perhaps use low confidence to assist manual corrections if viable?
+  - It may also be useful to try `layoutparser` as a '2nd opinion' (but the interface seems more complicated).
+- [ ] Geometry has been commented out of the data model, this could be useful to parse the layout. I
+  would prefer to try avoiding this using simple alphabetical heuristics.
+
+
+Additionally, I suggest serialising the outputs to JSON and storing alongside the images, to avoid
+reloading from the images each time.
 
 ## Requires
 
@@ -81,13 +91,14 @@ the results are very promising:
 >>> import dex; l = dex.load_library(); i = l.items[0]; s = i.scan_images()
 >>> from pprint import pprint; pp = lambda p: pprint(p, sort_dicts=False)
 >>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[0].blocks])
-[[['Index']],                            
+>>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[0].blocks])
+[[['Index']],
  [['Accelerated', 'descent,', '352,353'],
-  ['Accuracy,', '384'],         
-  ['Activation,', 'iv,', '375,376'],          
-  ['AD,', '397'],             
-  ['ADAGRAD,', '366'],                         
-  ['ADAM,', '322,', '356,366'],   
+  ['Accuracy,', '384'],
+  ['Activation,', 'iv,', '375,376'],
+  ['AD,', '397'],
+  ['ADAGRAD,', '366'],
+  ['ADAM,', '322,', '356,366'],
   ['Adaptive,', '407'],
   ['Adaptive', 'descent,', '356,', '361'],
   ['ADI', 'method,', '182'],
@@ -141,4 +152,28 @@ the results are very promising:
   ['Argmin,', '186,', '322'],
   ['Arnoldi,', '116,', '117'],
   ['Artificial', 'intelligence,', '371'],
+  ['Associative', 'Law,', '13,', '163'],
+  ['Asymptotic', 'rank,', '79'],
+  ['Augmented', 'Lagrangian,', '185,', '187'],
+  ['Autocorrelation,', '220'],
+  ['Automatic', 'differentiation,', '371,397'],
+  ['Average', 'pooling,', '379']],
+ [['423']]]
 ```
+
+An error creeps in here where the entry for "Alternating minimization" has 4 page numbers: 97, 106,
+199, 252. The first three are on the same line as the entry label, but the 252 spills onto another
+line and is split apart by the layout parsing algorithm. Fortunately this can be detected in a
+couple of ways:
+
+- The alphabetical order in an index should be monotonic (obviously), and there are multiple chances
+  to establish this in each block
+- The only time a number would appear in a block on its own would be if it was the page number or if
+  one had been split apart like this.
+- Note that the block from 'Averages' through to 'Bregman distance' got inserted in between, and
+  this is in fact the entire right column of the page: so shifting it after the next alphabetically
+  preceding block (the end of the block from "Antisymmetric" through "Average pooling") would place
+  it in the correct position.
+- Care must be taken as a page number could also appear at the top of the page. I suspect this will
+  end up being unambiguous, however a multi-page processor should be able to identify monotonically
+  increasing sequences of consecutive numbers and label them as page numbers of the index.
