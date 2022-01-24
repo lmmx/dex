@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from page_dewarp import cfg as dewarp_cfg
 from page_dewarp.image import WarpedImage
 
 __all__ = ["dewarp_and_save"]
 
+dewarp_cfg["image_opts"].update({"PAGE_MARGIN_X": 10, "PAGE_MARGIN_Y": 0})
 
 def dewarp_and_save(input_image: Path, output_dir: Path | None = None) -> Path:
     dewarped_img = WarpedImage(input_image)  # Suppress STDOUT maybe?

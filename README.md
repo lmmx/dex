@@ -76,8 +76,8 @@ The next step is to scan the images in these directories.
 
 ```py
 >>> i = items[0]
->>> imgs = i.scan_images()
->>> p1 = imgs.pages[0]
+>>> i.scan_images()
+>>> p1 = i.scanned.pages[0]
 >>> print(p1.page_idx) # 0
 >>> b1, b2, b3 = p1.blocks[0:3]
 >>> [w.value for w in b1.lines[0].words]
@@ -85,13 +85,22 @@ The next step is to scan the images in these directories.
 ```
 
 To show a bit more, you can see there's a bit more work to be done in cleaning up this output but
-the results are very promising:
+the results are very promising.
 
-```
->>> import dex; l = dex.load_library(); i = l.items[0]; s = i.scan_images()
+The first step of the following [dense] snippet is to:
+- process the library's ISBNs (the `l = dex.load_library()` helper function)),
+- take the first item in the library (`i = l.items[0]`)
+- and scan its page images (`i.scan_images()`)
+
+> Note: there's a helper method to scan the images of all the items in the library, `Library.scan()`
+
+We can then group its words together by line, taking the first page image as example
+(iterating through all the 'blocks' identified on it by the page layout detection algorithm)
+
+```py 
+>>> import dex; l = dex.load_library(); i = l.items[0]; i.scan_images()
 >>> from pprint import pprint; pp = lambda p: pprint(p, sort_dicts=False)
->>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[0].blocks])
->>> pp([[[w.value for w in line.words] for line in b.lines] for b in s.pages[0].blocks])
+>>> pp([[[w.value for w in line.words] for line in b.lines] for b in i.scanned.pages[0].blocks])
 [[['Index']],
  [['Accelerated', 'descent,', '352,353'],
   ['Accuracy,', '384'],

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
+from .data_model import DocTreeDoc
 from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata
 from .log_utils import Console
@@ -42,9 +43,13 @@ class Library:
         shelf_items = [i for i in shelf_items if i is not None]  # Omit returned None
         return cls(items=shelf_items)
 
+    def scan(self):
+        for i in self.items:
+            i.scan_images()
 
 class IndexedItem:
     isbn_regex = r"[0-9]{10,13}"
+    scanned: DocTreeDoc
 
     @property
     def is_shelved(self) -> bool:
@@ -72,7 +77,7 @@ class LibraryItem(IndexedItem):
         else:
             return cls.from_isbn(isbn_code=isbn_code, shelf=shelf_dir)
 
-    def scan_images(self):
+    def scan_images(self) -> None:
         image_suffixes = ".png .jpg .jpeg".split()
         item_images = [p for p in self.shelf.iterdir() if p.suffix in image_suffixes]
         item_images_to_dewarp = [p for p in item_images if not has_been_dewarped(p)]
@@ -88,4 +93,5 @@ class LibraryItem(IndexedItem):
             logger.info(f"Undewarped images: {unfixed}")
         else:
             logger.debug(f"Dewarped all images for item {self.shelf.stem}")
-        return scan_text_in_images(dewarped_images)
+        self.scanned = scan_text_in_images(dewarped_images)
+        return

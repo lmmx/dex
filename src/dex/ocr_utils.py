@@ -10,7 +10,7 @@ from .data_model import DocTreeDoc
 __all__ = ["scan_text_in_images"]
 
 
-def scan_text_in_images(image_paths: list[Path]):
+def scan_text_in_images(image_paths: list[Path]) -> DocTreeDoc:
     model_config = {
         "det_arch": "db_resnet50",
         "reco_arch": "crnn_vgg16_bn",
