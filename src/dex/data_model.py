@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 from itertools import chain
 from typing import Iterator
 
+import ujson
 from dataclass_wizard import JSONWizard
-from more_itertools import SequenceView
 
 from .heuristics import likely_page_number
 
@@ -25,7 +25,7 @@ class DocTreeDoc(JSONWizard):
         key_transform_with_dump = "SNAKE"
 
     def dump_json(self):
-        return json.dumps({"pages": [p.dump_json() for p in self.pages]})
+        return ujson.dumps({"pages": [p.serialise() for p in self.pages]})
 
 
 @dataclass
@@ -42,8 +42,8 @@ class Page:
         """Not yet implemented: detect page number."""
         return None
 
-    def dump_json(self):
-        return json.dumps({
+    def serialise(self):
+        return {
             "page_idx": self.page_idx,
             "page_no": self.page_no,
             "words": self.all_words(),
@@ -104,11 +104,11 @@ class Page:
                     decision = True
         return decision
 
+
 @dataclass
 class Block:
     # geometry: tuple[tuple[float, float], tuple[float, float]]
     lines: list[Line]
-
 
     def iter_words(self) -> Iterator[str]:
         """
@@ -117,17 +117,18 @@ class Block:
         object to structure the page number.
         """
         # TODO: handle the value: currently it is trivially passed through
-        return (
-            LineEntry.estimate_from_line(line).serialise()
-            for line in self.lines
-        )
+        return (LineEntry.estimate_from_line(line).serialise() for line in self.lines)
+
 
 @dataclass
 class Line:
     geometry: tuple[tuple[float, float], tuple[float, float]]
     words: list[Word]
 
-class RomanNumeral: pass # Need to implement for lower cases
+
+class RomanNumeral:
+    pass  # Need to implement for lower cases
+
 
 # To be used in the `Block.iter_words` method to roll up lines into entries.
 @dataclass
@@ -153,6 +154,7 @@ class LineEntry:
 
     def serialise(self):
         return {self.title: self.page_numbers}
+
 
 @dataclass
 class Word:

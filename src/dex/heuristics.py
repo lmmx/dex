@@ -2,6 +2,7 @@ from __future__ import annotations
 
 __all__ = ["likely_page_number"]
 
+
 def likely_page_number(value: str) -> int | None:
     """
     Guess if a word value is likely to be a page number by checking for numeric values,

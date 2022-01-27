@@ -51,6 +51,7 @@ class Library:
     def sorted_items(self) -> list[LibraryItem]:
         return sorted(self.items, key=LibraryItem._sortable_metadata)
 
+
 class IndexedItem:
     isbn_regex = r"[0-9]{10,13}"
     scanned: DocTreeDoc
@@ -94,9 +95,9 @@ class LibraryItem(IndexedItem):
         dewarp_funcs = [partial(dewarp_and_save, p) for p in item_images_to_dewarp]
         if dewarp_funcs:
             batch_multiprocess(dewarp_funcs)
-        dewarped_images = sorted([
-            dewarped_path(p) for p in item_images if has_been_dewarped(p)
-        ]) # Sort so that the scanned results will also be sorted
+        dewarped_images = sorted(
+            [dewarped_path(p) for p in item_images if has_been_dewarped(p)]
+        )  # Sort so that the scanned results will also be sorted
         unfixed = [p for p in item_images if not has_been_dewarped(p)]
         if any(unfixed):
             logger.warning(f"Failed to dewarp all images for item {self.shelf.stem}")
@@ -106,5 +107,5 @@ class LibraryItem(IndexedItem):
         self.scanned = scan_text_in_images(dewarped_images)
         return
 
-    def _sortable_metadata(self) -> tuple[str,str]:
+    def _sortable_metadata(self) -> tuple[str, str]:
         return (self.metadata.first_author_surname, self.metadata.title)

@@ -9,6 +9,7 @@ __all__ = ["dewarp_and_save"]
 
 dewarp_cfg["image_opts"].update({"PAGE_MARGIN_X": 10, "PAGE_MARGIN_Y": 0})
 
+
 def dewarp_and_save(input_image: Path, output_dir: Path | None = None) -> Path:
     dewarped_img = WarpedImage(input_image)  # Suppress STDOUT maybe?
     if output_dir is None:
