@@ -47,6 +47,10 @@ class Library:
         for i in self.items:
             i.scan_images()
 
+    @property
+    def sorted_items(self) -> list[LibraryItem]:
+        return sorted(self.items, key=LibraryItem._sortable_metadata)
+
 class IndexedItem:
     isbn_regex = r"[0-9]{10,13}"
     scanned: DocTreeDoc
@@ -95,3 +99,6 @@ class LibraryItem(IndexedItem):
             logger.debug(f"Dewarped all images for item {self.shelf.stem}")
         self.scanned = scan_text_in_images(dewarped_images)
         return
+
+    def _sortable_metadata(self) -> tuple[str,str]:
+        return (self.metadata.first_author_surname, self.metadata.title)
