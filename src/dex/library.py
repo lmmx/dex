@@ -82,6 +82,12 @@ class LibraryItem(IndexedItem):
             return cls.from_isbn(isbn_code=isbn_code, shelf=shelf_dir)
 
     def scan_images(self) -> None:
+        """
+        Save dewarped versions of the images for this item if any have not been made
+        yet. If any can't be dewarped, warn the user but continue anyway.
+
+        Scan the text in the images into the :attr:`scanned` attribute.
+        """
         image_suffixes = ".png .jpg .jpeg".split()
         item_images = [p for p in self.shelf.iterdir() if p.suffix in image_suffixes]
         item_images_to_dewarp = [p for p in item_images if not has_been_dewarped(p)]
