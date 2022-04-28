@@ -1,5 +1,6 @@
 dataclass-wizard
 GitPython
+isbnlib
 more_itertools
 page-dewarp
 python-doctr
