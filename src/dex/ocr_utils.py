@@ -5,6 +5,7 @@ from typing import Literal, overload
 
 from doctr.io import DocumentFile
 from doctr.models import ocr_predictor
+from transformers import AutoProcessor, AutoModelForTokenClassification
 
 from .data_model import DocTreeDoc, LayoutLMDoc
 from .layoutlmv3 import process_page_image
@@ -33,6 +34,9 @@ def scan_text_in_images(
         processed_pages = [process_page_image(p) for p in image_paths]
         processor = AutoProcessor.from_pretrained("microsoft/layoutlmv3-large", apply_ocr=True)
         model = AutoModelForTokenClassification.from_pretrained("microsoft/layoutlmv3-large")
+        # see:
+        # https://huggingface.co/spaces/Theivaprakasham/layoutlmv3_invoice/blob/main/app.py
+        # https://colab.research.google.com/github/NielsRogge/Transformers-Tutorials/blob/master/LayoutLMv3/Fine_tune_LayoutLMv3_on_FUNSD_(HuggingFace_Trainer).ipynb
         doc = LayoutLMDoc(pages=processed_pages)
     else:
         model_config = {
