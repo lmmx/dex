@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from itertools import chain
+from pathlib import Path
 from typing import Iterator
 
 import ujson
@@ -12,7 +13,7 @@ from .heuristics import likely_page_number
 # from typing import Any
 
 
-__all__ = ["DocTreeDoc", "Page", "Block", "Line", "Word"]
+__all__ = ["DocTreeDoc", "LayoutLMDoc", "LayoutLMPage", "Page", "Block", "Line", "Word"]
 
 
 @dataclass
@@ -26,6 +27,17 @@ class DocTreeDoc(JSONWizard):
 
     def dump_json(self):
         return ujson.dumps({"pages": [p.serialise() for p in self.pages]})
+
+
+@dataclass
+class LayoutLMPage:
+    source: Path
+
+
+@dataclass
+class LayoutLMDoc:
+    "Won't do anything special like DocTreeDoc"
+    pages: list[LayoutLMPage]
 
 
 @dataclass

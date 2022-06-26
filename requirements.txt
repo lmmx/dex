@@ -6,4 +6,5 @@ page-dewarp
 python-doctr
 torch
 tqdm
+transformers
 ujson

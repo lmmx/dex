@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
-from .data_model import DocTreeDoc
+from .data_model import DocTreeDoc, LayoutLMDoc
 from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata
 from .log_utils import Console
@@ -18,8 +18,11 @@ __all__ = ["load_library"]
 logger = Console(name=__name__).logger
 
 
-def load_library() -> Library:
+def load_library(n: int = 0) -> Library:
+    """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
     shelf_dirs = list(filter(Path.is_dir, shelves_path.iterdir()))
+    if n > 0:
+        shelf_dirs = shelf_dirs[:n]
     lib = Library.from_shelves(shelf_dirs)
     return lib
 
@@ -54,7 +57,7 @@ class Library:
 
 class IndexedItem:
     isbn_regex = r"[0-9]{10,13}"
-    scanned: DocTreeDoc
+    scanned: DocTreeDoc | LayoutLMDoc
 
     @property
     def is_shelved(self) -> bool:
@@ -82,12 +85,15 @@ class LibraryItem(IndexedItem):
         else:
             return cls.from_isbn(isbn_code=isbn_code, shelf=shelf_dir)
 
-    def scan_images(self) -> None:
+    def scan_images(self, layoutlm: bool = True) -> None:
         """
         Save dewarped versions of the images for this item if any have not been made
         yet. If any can't be dewarped, warn the user but continue anyway.
 
         Scan the text in the images into the :attr:`scanned` attribute.
+
+        If ``layoutlm`` is passed as True (default: False) then use the LayoutLMv3
+        model rather than Mindee docTR (ResNet detection/VGG recognition).
         """
         image_suffixes = ".png .jpg .jpeg".split()
         item_images = [p for p in self.shelf.iterdir() if p.suffix in image_suffixes]
@@ -104,7 +110,7 @@ class LibraryItem(IndexedItem):
             logger.info(f"Undewarped images: {unfixed}")
         else:
             logger.debug(f"Dewarped all images for item {self.shelf.stem}")
-        self.scanned = scan_text_in_images(dewarped_images)
+        self.scanned = scan_text_in_images(dewarped_images, layoutlm=layoutlm)
         return
 
     def _sortable_metadata(self) -> tuple[str, str]:
