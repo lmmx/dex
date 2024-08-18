@@ -17,18 +17,19 @@ __all__ = ["load_library"]
 logger = Console(name=__name__).logger
 
 
+def load_library(n: int | None = None) -> Library:
+    """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
+    dirs = Shelving(root_dir=shelves_path).shelves[:n]
+    # Filter non-null results from calling `LibraryItem.from_shelf` on all `shelf_dirs`
+    return Library(items=list(filter(None, map(LibraryItem.from_shelf, dirs))))
+
+
 class Shelving(BaseModel, validate_default=True):
     root_dir: DirectoryPath = shelves_path
 
     @property
     def shelves(self) -> list[DirectoryPath]:
         return [p for p in self.root_dir.iterdir() if p.is_dir()]
-
-
-def load_library(n: int | None = None) -> Library:
-    """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
-    dirs = Shelving(root_dir=shelves_path).shelves[:n]
-    return Library.from_shelves(dirs)
 
 
 @dataclass
@@ -39,26 +40,13 @@ class Library:
         n = len(self.items)
         return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
 
-    @classmethod
-    def from_shelves(cls, shelf_dirs: list[Path], parallel: bool = False) -> Library:
-        if parallel:
-            shelf_items = batch_multiprocess_with_return(
-                function_list=[
-                    partial(LibraryItem.from_shelf, sd) for sd in shelf_dirs
-                ],
-            )
-        else:
-            shelf_items = [LibraryItem.from_shelf(sd) for sd in shelf_dirs]
-        shelf_items = list(filter(None, shelf_items))  # Omit returned None values
-        return cls(items=shelf_items)
-
     def scan(self) -> None:
         for i in self.items:
             i.scan_images()
 
     @property
     def sorted_items(self) -> list[LibraryItem]:
-        return sorted(self.items, key=LibraryItem._sortable_metadata)
+        return sorted(self.items, key=LibraryItem._sort_by)
 
 
 @dataclass
@@ -106,5 +94,5 @@ class LibraryItem:
         # self.scanned = None  # Removed LayoutLMv3 capabilities here
         return
 
-    def _sortable_metadata(self) -> tuple[str, str]:
+    def _sort_by(self) -> tuple[str, str]:
         return (self.metadata.first_author.surname, self.metadata.title)
