@@ -188,7 +188,7 @@ couple of ways:
 ---
 
 Currently the `DocTreeDoc` class (a nested data structure with all the words, lines, etc.) is stored
-on the `scanned` attribute of each `LibraryItem` in the `Library` object you get from
+on the `scanned` attribute of each `Book` in the `Library` object you get from
 `dex.load_library()`.
 
 ```py

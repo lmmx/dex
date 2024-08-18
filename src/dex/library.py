@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from functools import cached_property, partial
+from functools import cached_property
 from pathlib import Path
 
 from pydantic import BaseModel, DirectoryPath, FilePath, ValidationError
 
-from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata, isbn_ta
 from .log_utils import Console
-from .multiproc_utils import batch_multiprocess
-from .path_utils import dewarped_path, has_been_dewarped, shelves_path
+from .path_utils import shelves_path
 
 __all__ = ["load_library"]
 
@@ -19,8 +17,8 @@ logger = Console(name=__name__).logger
 def load_library(n: int | None = None) -> Library:
     """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
     dirs = Shelving().shelves[:n]
-    # Filter non-null results from calling `LibraryItem.from_shelf` on all `shelf_dirs`
-    return Library(items=filter(None, map(LibraryItem.from_shelf, dirs)))
+    # Filter non-null results from calling `Book.from_shelf` on all `shelf_dirs`
+    return Library(items=filter(None, map(Book.from_shelf, dirs)))
 
 
 class Shelving(BaseModel):
@@ -32,18 +30,18 @@ class Shelving(BaseModel):
 
 
 class Library(BaseModel):
-    items: list[LibraryItem]
+    items: list[Book]
 
     def __repr__(self):
         n = len(self.items)
         return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
 
     @property
-    def sorted_items(self) -> list[LibraryItem]:
-        return sorted(self.items, key=LibraryItem._sort_by)
+    def sorted_items(self) -> list[Book]:
+        return sorted(self.items, key=Book._sort_by)
 
 
-class LibraryItem(BaseModel):
+class Book(BaseModel):
     metadata: BookMetadata
     shelf: Path
     # scanned: None
@@ -54,7 +52,7 @@ class LibraryItem(BaseModel):
         return list(filter(lambda p: p.suffix in image_suffixes, self.shelf.iterdir()))
 
     @classmethod
-    def from_shelf(cls, shelf_dir: Path) -> LibraryItem | None:
+    def from_shelf(cls, shelf_dir: Path) -> Book | None:
         """TODO: this should not be a class method, make a `shelves` module."""
         dir_name = shelf_dir.stem
         try:
@@ -65,30 +63,6 @@ class LibraryItem(BaseModel):
         else:
             metadata = get_isbn_metadata(isbn_code)
             return cls(metadata=metadata, shelf=shelf_dir)
-
-    def dewarp_images(self) -> None:
-        """
-        Save dewarped versions of the images for this item if any have not been made
-        yet. If any can't be dewarped, warn the user but continue anyway.
-
-        Scan the text in the images into the :attr:`scanned` attribute.
-        """
-        item_images_to_dewarp = [p for p in self.images if not has_been_dewarped(p)]
-        dewarp_funcs = [partial(dewarp_and_save, p) for p in item_images_to_dewarp]
-        if dewarp_funcs:
-            batch_multiprocess(dewarp_funcs)
-        # Sort so that the scanned results will also be sorted
-        dewarped_images = sorted(  # noqa: F841
-            [dewarped_path(p) for p in self.images if has_been_dewarped(p)],
-        )
-        unfixed = [p for p in self.images if not has_been_dewarped(p)]
-        if any(unfixed):
-            logger.warning(f"Failed to dewarp all images for item {self.shelf.stem}")
-            logger.info(f"Undewarped images: {unfixed}")
-        else:
-            logger.debug(f"Dewarped all images for item {self.shelf.stem}")
-        # self.scanned = None  # Removed LayoutLMv3 capabilities here
-        return
 
     def _sort_by(self) -> tuple[str, str]:
         return (self.metadata.first_author.surname, self.metadata.title)
