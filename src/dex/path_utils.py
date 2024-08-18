@@ -9,7 +9,7 @@ from git.exc import InvalidGitRepositoryError
 
 from . import __path__
 
-__all__ = ["pkg_cache_dir", "shelves_path", "dewarped_path", "has_been_dewarped"]
+__all__ = ["pkg_cache_dir", "shelves_path"]
 
 pkg_path = Path(*__path__)
 pkg_cache_dir = Path(user_cache_dir(appname="dex", appauthor="spin.systems"))
@@ -49,11 +49,3 @@ shelves_path = _get_shelves_path()
 
 if not shelves_path.exists():
     raise FileNotFoundError("Internal error in library path resolution")
-
-
-def dewarped_path(image_path: Path) -> Path:
-    return image_path.parent / "dewarped" / image_path.name
-
-
-def has_been_dewarped(image_path: Path) -> bool:
-    return dewarped_path(image_path).exists()

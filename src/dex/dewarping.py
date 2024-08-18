@@ -9,7 +9,6 @@ from page_dewarp.image import WarpedImage
 from .library import Book
 from .log_utils import Console
 from .multiproc_utils import batch_multiprocess
-from .path_utils import dewarped_path, has_been_dewarped
 
 __all__ = ["dewarp_and_save"]
 
@@ -38,19 +37,18 @@ def dewarp_images(book: Book) -> None:
 
     Scan the text in the images into the :attr:`scanned` attribute.
     """
-    item_images_to_dewarp = [p for p in book.images if not has_been_dewarped(p)]
-    dewarp_funcs = [partial(dewarp_and_save, p) for p in item_images_to_dewarp]
+    item_images_to_dewarp = [img for img in book.images if not img.has_been_dewarped]
+    dewarp_funcs = [partial(dewarp_and_save, img) for img in item_images_to_dewarp]
     if dewarp_funcs:
         batch_multiprocess(dewarp_funcs)
     # Sort so that the scanned results will also be sorted
     dewarped_images = sorted(  # noqa: F841
-        [dewarped_path(p) for p in book.images if has_been_dewarped(p)],
+        [img.dewarped_path for img in book.images if img.has_been_dewarped]
     )
-    unfixed = [p for p in book.images if not has_been_dewarped(p)]
+    unfixed = [img for img in book.images if not img.has_been_dewarped]
     if any(unfixed):
         logger.warning(f"Failed to dewarp all images for item {book.shelf.stem}")
         logger.info(f"Undewarped images: {unfixed}")
     else:
         logger.debug(f"Dewarped all images for item {book.shelf.stem}")
-    # book.scanned = None  # Removed LayoutLMv3 capabilities here
     return

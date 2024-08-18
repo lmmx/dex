@@ -3,21 +3,20 @@ from __future__ import annotations
 from contextlib import suppress
 from functools import cached_property
 from pathlib import Path
-from typing import ClassVar, Iterator
+from typing import Iterator
 
 from pydantic import (
     BaseModel,
     DirectoryPath,
-    FilePath,
     RootModel,
     ValidationError,
-    field_validator,
 )
 
-from .isbn_utils import BookMetadata
-from .path_utils import shelves_path
+from ..isbn_utils import BookMetadata
+from ..path_utils import shelves_path
+from .images import Dewarped, Photo
 
-__all__ = ["Shelving", "Library", "Book", "Shelf", "Photo"]
+__all__ = ["Shelving", "Library", "Book", "Shelf"]
 
 
 class Shelving(BaseModel):
@@ -47,7 +46,11 @@ class Book(BaseModel):
 
     @cached_property
     def images(self) -> list[Photo]:
-        return list(self.shelf.iter_images())
+        return list(self.shelf.iter_images(dewarped=False))
+
+    @cached_property
+    def dewarped_images(self) -> list[Dewarped]:
+        return list(self.shelf.iter_images(dewarped=True))
 
     def _sort_by(self) -> tuple[str, str]:
         return (self.metadata.first_author.surname, self.metadata.title)
@@ -56,23 +59,14 @@ class Book(BaseModel):
 class Shelf(RootModel):
     root: Path
 
-    def iter_images(self) -> Iterator[Photo]:
+    @property
+    def dewarped_dir(self) -> Path:
+        return self.root / "dewarped"
+
+    def iter_images(self, dewarped=False) -> Iterator[Photo] | Iterator[Dewarped]:
         """A more structured alternative to iterating over file extensions."""
-        for path in self.root.iterdir():
-            with suppress(ValidationError):
-                yield Photo(path)
-
-
-class Photo(RootModel):
-    """An existing file path with PNG/JPG suffix."""
-
-    suffixes: ClassVar[str] = [".png", ".jpg", ".jpeg"]
-
-    root: FilePath
-
-    @field_validator("root", mode="after")
-    @classmethod
-    def is_image(cls, v: FilePath) -> FilePath:
-        if v.suffix not in cls.suffixes:
-            raise ValueError(f"File suffix {v.suffix} is not in {cls.suffixes}")
-        return v
+        source_dir = self.dewarped_dir if dewarped else self.root
+        if source_dir.exists():
+            for path in source_dir.iterdir():
+                with suppress(ValidationError):
+                    yield Dewarped(path) if dewarped else Photo(path)
