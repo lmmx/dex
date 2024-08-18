@@ -9,7 +9,7 @@ from pydantic import BaseModel, DirectoryPath, ValidationError
 from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata, isbn_ta
 from .log_utils import Console
-from .multiproc_utils import batch_multiprocess, batch_multiprocess_with_return
+from .multiproc_utils import batch_multiprocess
 from .path_utils import dewarped_path, has_been_dewarped, shelves_path
 
 __all__ = ["load_library"]
