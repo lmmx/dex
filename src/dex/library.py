@@ -25,11 +25,10 @@ class Shelving(BaseModel, validate_default=True):
         return [p for p in self.root_dir.iterdir() if p.is_dir()]
 
 
-def load_library(n: int = 0) -> Library:
+def load_library(n: int | None = None) -> Library:
     """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
-    dirs = Shelving(root_dir=shelves_path).shelves
-    n_dirs = dirs[:n] if n > 0 else dirs
-    return Library.from_shelves(n_dirs)
+    dirs = Shelving(root_dir=shelves_path).shelves[:n]
+    return Library.from_shelves(dirs)
 
 
 @dataclass
@@ -67,10 +66,6 @@ class LibraryItem:
     metadata: BookMetadata
     shelf: Path | None
     # scanned: None
-
-    @property
-    def is_shelved(self) -> bool:
-        return self.shelf is not None
 
     @classmethod
     def from_shelf(cls, shelf_dir: Path) -> LibraryItem | None:
