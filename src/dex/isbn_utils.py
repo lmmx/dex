@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from isbnlib import meta
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field, RootModel, TypeAdapter
 from pydantic_extra_types.isbn import ISBN
 
-__all__ = ["AuthorName", "BookMetadata", "get_isbn_metadata"]
+__all__ = ["isbn_ta", "AuthorName", "BookMetadata", "get_isbn_metadata"]
+
+
+isbn_ta = TypeAdapter(ISBN)
 
 
 class AuthorName(RootModel):

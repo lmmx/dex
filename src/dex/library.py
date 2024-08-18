@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
+from pydantic import ValidationError
+
 from .dewarping import dewarp_and_save
-from .isbn_utils import BookMetadata, get_isbn_metadata
+from .isbn_utils import BookMetadata, get_isbn_metadata, isbn_ta
 from .log_utils import Console
 from .multiproc_utils import batch_multiprocess, batch_multiprocess_with_return
 from .path_utils import dewarped_path, has_been_dewarped, shelves_path
@@ -41,7 +42,7 @@ class Library:
             )
         else:
             shelf_items = [LibraryItem.from_shelf(sd) for sd in shelf_dirs]
-        shelf_items = [i for i in shelf_items if i is not None]  # Omit returned None
+        shelf_items = list(filter(None, shelf_items))  # Omit returned None values
         return cls(items=shelf_items)
 
     def scan(self):
@@ -54,12 +55,7 @@ class Library:
 
 
 class IndexedItem:
-    isbn_regex = r"[0-9]{10,13}"
     scanned: None  # TODO: put back
-
-    @property
-    def is_shelved(self) -> bool:
-        return self.shelf is not None
 
 
 @dataclass
@@ -67,21 +63,22 @@ class LibraryItem(IndexedItem):
     metadata: BookMetadata
     shelf: Path | None
 
-    @classmethod
-    def from_isbn(cls, isbn_code: str, shelf: Path | None = None) -> LibraryItem:
-        metadata = get_isbn_metadata(isbn_code)
-        return cls(metadata=metadata, shelf=shelf)
+    @property
+    def is_shelved(self) -> bool:
+        return self.shelf is not None
 
     @classmethod
-    def from_shelf(cls, shelf_dir: Path) -> LibraryItem:
+    def from_shelf(cls, shelf_dir: Path) -> LibraryItem | None:
+        """TODO: this should not be a class method, make a `shelves` module."""
+        dir_name = shelf_dir.stem
         try:
-            isbn_code = next(re.finditer(cls.isbn_regex, shelf_dir.stem)).group()
-        except StopIteration:
-            logger.warning(
-                f"Could not detect ISBN in filename {shelf_dir.stem} (omitting)"
-            )
+            isbn_code = isbn_ta.validate_strings(dir_name)
+        except ValidationError:
+            logger.warning(f"Could not detect ISBN in {dir_name=} (omitting)")
+            return None
         else:
-            return cls.from_isbn(isbn_code=isbn_code, shelf=shelf_dir)
+            metadata = get_isbn_metadata(isbn_code)
+            return cls(metadata=metadata, shelf=shelf_dir)
 
     def scan_images(self) -> None:
         """
