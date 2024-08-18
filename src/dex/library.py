@@ -39,10 +39,6 @@ class Library(BaseModel):
         n = len(self.items)
         return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
 
-    def scan(self) -> None:
-        for i in self.items:
-            i.scan_images()
-
     @property
     def sorted_items(self) -> list[LibraryItem]:
         return sorted(self.items, key=LibraryItem._sort_by)
