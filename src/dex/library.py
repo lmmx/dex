@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
-from pydantic import ValidationError
+from pydantic import BaseModel, DirectoryPath, ValidationError
 
 from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata, isbn_ta
@@ -17,13 +17,19 @@ __all__ = ["load_library"]
 logger = Console(name=__name__).logger
 
 
+class Shelving(BaseModel, validate_default=True):
+    root_dir: DirectoryPath = shelves_path
+
+    @property
+    def shelves(self) -> list[DirectoryPath]:
+        return [p for p in self.root_dir.iterdir() if p.is_dir()]
+
+
 def load_library(n: int = 0) -> Library:
     """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
-    shelf_dirs = list(filter(Path.is_dir, shelves_path.iterdir()))
-    if n > 0:
-        shelf_dirs = shelf_dirs[:n]
-    lib = Library.from_shelves(shelf_dirs)
-    return lib
+    dirs = Shelving(root_dir=shelves_path).shelves
+    n_dirs = dirs[:n] if n > 0 else dirs
+    return Library.from_shelves(n_dirs)
 
 
 @dataclass
@@ -35,7 +41,7 @@ class Library:
         return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
 
     @classmethod
-    def from_shelves(cls, shelf_dirs: list[Path], parallel: bool = False):
+    def from_shelves(cls, shelf_dirs: list[Path], parallel: bool = False) -> Library:
         if parallel:
             shelf_items = batch_multiprocess_with_return(
                 function_list=[partial(LibraryItem.from_shelf, sd) for sd in shelf_dirs]
@@ -45,7 +51,7 @@ class Library:
         shelf_items = list(filter(None, shelf_items))  # Omit returned None values
         return cls(items=shelf_items)
 
-    def scan(self):
+    def scan(self) -> None:
         for i in self.items:
             i.scan_images()
 
@@ -54,14 +60,11 @@ class Library:
         return sorted(self.items, key=LibraryItem._sortable_metadata)
 
 
-class IndexedItem:
-    scanned: None  # TODO: put back
-
-
 @dataclass
-class LibraryItem(IndexedItem):
+class LibraryItem:
     metadata: BookMetadata
     shelf: Path | None
+    # scanned: None
 
     @property
     def is_shelved(self) -> bool:
@@ -103,7 +106,7 @@ class LibraryItem(IndexedItem):
             logger.info(f"Undewarped images: {unfixed}")
         else:
             logger.debug(f"Dewarped all images for item {self.shelf.stem}")
-        self.scanned = None  # Removed LayoutLMv3 capabilities here
+        # self.scanned = None  # Removed LayoutLMv3 capabilities here
         return
 
     def _sortable_metadata(self) -> tuple[str, str]:
