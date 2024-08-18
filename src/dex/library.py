@@ -19,12 +19,12 @@ logger = Console(name=__name__).logger
 
 def load_library(n: int | None = None) -> Library:
     """Pass ``n`` to just load that number of shelves (used for fast dev iteration)."""
-    dirs = Shelving(root_dir=shelves_path).shelves[:n]
+    dirs = Shelving().shelves[:n]
     # Filter non-null results from calling `LibraryItem.from_shelf` on all `shelf_dirs`
-    return Library(items=list(filter(None, map(LibraryItem.from_shelf, dirs))))
+    return Library(items=filter(None, map(LibraryItem.from_shelf, dirs)))
 
 
-class Shelving(BaseModel, validate_default=True):
+class Shelving(BaseModel):
     root_dir: DirectoryPath = shelves_path
 
     @property
@@ -32,8 +32,7 @@ class Shelving(BaseModel, validate_default=True):
         return [p for p in self.root_dir.iterdir() if p.is_dir()]
 
 
-@dataclass
-class Library:
+class Library(BaseModel):
     items: list[LibraryItem]
 
     def __repr__(self):
