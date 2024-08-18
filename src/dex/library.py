@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
-from .data_model import DocTreeDoc, LayoutLMDoc
 from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata
 from .log_utils import Console
@@ -56,7 +55,7 @@ class Library:
 
 class IndexedItem:
     isbn_regex = r"[0-9]{10,13}"
-    scanned: DocTreeDoc | LayoutLMDoc
+    scanned: None  # TODO: put back
 
     @property
     def is_shelved(self) -> bool:
@@ -84,15 +83,12 @@ class LibraryItem(IndexedItem):
         else:
             return cls.from_isbn(isbn_code=isbn_code, shelf=shelf_dir)
 
-    def scan_images(self, layoutlm: bool = True) -> None:
+    def scan_images(self) -> None:
         """
         Save dewarped versions of the images for this item if any have not been made
         yet. If any can't be dewarped, warn the user but continue anyway.
 
         Scan the text in the images into the :attr:`scanned` attribute.
-
-        If ``layoutlm`` is passed as True (default: False) then use the LayoutLMv3
-        model rather than Mindee docTR (ResNet detection/VGG recognition).
         """
         image_suffixes = ".png .jpg .jpeg".split()
         item_images = [p for p in self.shelf.iterdir() if p.suffix in image_suffixes]
@@ -110,8 +106,8 @@ class LibraryItem(IndexedItem):
             logger.info(f"Undewarped images: {unfixed}")
         else:
             logger.debug(f"Dewarped all images for item {self.shelf.stem}")
-        self.scanned = []  # Removed LayoutLMv3 capabilities here
+        self.scanned = None  # Removed LayoutLMv3 capabilities here
         return
 
     def _sortable_metadata(self) -> tuple[str, str]:
-        return (self.metadata.first_author_surname, self.metadata.title)
+        return (self.metadata.first_author.surname, self.metadata.title)

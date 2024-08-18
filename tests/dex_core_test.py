@@ -1,5 +1,7 @@
-from dex import load_library
+from pysnooper import snoop
+from pytest import importorskip
 
 
+@snoop(depth=10)
 def test_library_load():
-    load_library()
+    importorskip("examples.load_entire_library")

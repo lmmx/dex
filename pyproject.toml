@@ -16,6 +16,7 @@ dependencies = [
     "more-itertools>=10.4.0",
     "page-dewarp>=0.1.5",
     "tqdm>=4.66.5",
+    "pydantic-extra-types>=2.9.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
