@@ -1,9 +1,18 @@
 from __future__ import annotations
 
+from contextlib import suppress
 from functools import cached_property
 from pathlib import Path
+from typing import ClassVar, Iterator
 
-from pydantic import BaseModel, DirectoryPath, FilePath, ValidationError
+from pydantic import (
+    BaseModel,
+    DirectoryPath,
+    FilePath,
+    RootModel,
+    ValidationError,
+    field_validator,
+)
 
 from .isbn_utils import BookMetadata, get_isbn_metadata, isbn_ta
 from .log_utils import Console
@@ -43,13 +52,12 @@ class Library(BaseModel):
 
 class Book(BaseModel):
     metadata: BookMetadata
-    shelf: Path
+    shelf: Shelf
     # scanned: None
 
     @cached_property
-    def images(self) -> list[FilePath]:
-        image_suffixes = ".png .jpg .jpeg".split()
-        return list(filter(lambda p: p.suffix in image_suffixes, self.shelf.iterdir()))
+    def images(self) -> list[Photo]:
+        return list(self.shelf.iter_images())
 
     @classmethod
     def from_shelf(cls, shelf_dir: Path) -> Book | None:
@@ -66,3 +74,28 @@ class Book(BaseModel):
 
     def _sort_by(self) -> tuple[str, str]:
         return (self.metadata.first_author.surname, self.metadata.title)
+
+
+class Shelf(RootModel):
+    root: Path
+
+    def iter_images(self) -> Iterator[Photo]:
+        """A more structured alternative to iterating over file extensions."""
+        for path in self.root.iterdir():
+            with suppress(ValidationError):
+                yield Photo(path)
+
+
+class Photo(RootModel):
+    """An existing file path with PNG/JPG suffix."""
+
+    suffixes: ClassVar[str] = [".png", ".jpg", ".jpeg"]
+
+    root: FilePath
+
+    @field_validator("root", mode="after")
+    @classmethod
+    def is_image(cls, v: FilePath) -> FilePath:
+        if v.suffix not in cls.suffixes:
+            raise ValueError(f"File suffix {v.suffix} is not in {cls.suffixes}")
+        return v
