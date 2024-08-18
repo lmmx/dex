@@ -3,14 +3,16 @@ from __future__ import annotations
 from os import environ
 from pathlib import Path
 
+from appdirs import user_cache_dir
 from git import Repo
 from git.exc import InvalidGitRepositoryError
 
 from . import __path__
 
-__all__ = ["shelves_path", "dewarped_path", "has_been_dewarped"]
+__all__ = ["pkg_cache_dir", "shelves_path", "dewarped_path", "has_been_dewarped"]
 
 pkg_path = Path(*__path__)
+pkg_cache_dir = Path(user_cache_dir(appname="dex", appauthor="spin.systems"))
 
 
 def _get_shelves_path() -> Path:

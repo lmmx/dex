@@ -7,16 +7,17 @@ name = "dex"
 version = "1.0.0"
 description = "Textbook indexer"
 authors = [
-    { name = "Louis Maddox", email = "louismmx@gmail.com" },
+  {name = "Louis Maddox", email = "louismmx@gmail.com"}
 ]
 dependencies = [
-    "pydantic>=2.8.2",
-    "gitpython>=3.1.43",
-    "isbnlib>=3.10.14",
-    "more-itertools>=10.4.0",
-    "page-dewarp>=0.1.5",
-    "tqdm>=4.66.5",
-    "pydantic-extra-types>=2.9.0",
+  "pydantic>=2.8.2",
+  "gitpython>=3.1.43",
+  "isbnlib>=3.10.14",
+  "more-itertools>=10.4.0",
+  "page-dewarp>=0.1.5",
+  "tqdm>=4.66.5",
+  "pydantic-extra-types>=2.9.0",
+  "appdirs>=1.4.4"
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -33,5 +34,5 @@ distribution = true
 
 [tool.pdm.dev-dependencies]
 test = [
-    "pytest>=8.3.2",
+  "pytest>=8.3.2"
 ]

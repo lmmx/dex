@@ -8,7 +8,10 @@ __all__ = ["batch_multiprocess", "batch_multiprocess_with_return"]
 
 
 def batch_multiprocess(
-    function_list, n_cores=mp.cpu_count(), show_progress=True, tqdm_desc=None
+    function_list,
+    n_cores=mp.cpu_count(),
+    show_progress=True,
+    tqdm_desc=None,
 ):
     """
     Run a list of functions on `n_cores` (default: all CPU cores),

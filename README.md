@@ -95,7 +95,7 @@ The first step of the following [dense] snippet is to:
 We can then group its words together by line, taking the first page image as example
 (iterating through all the 'blocks' identified on it by the page layout detection algorithm)
 
-```py 
+```py
 >>> import dex; l = dex.load_library(); i = l.items[0]; i.scan_images()
 >>> from pprint import pprint; pp = lambda p: pprint(p, sort_dicts=False)
 >>> pp([[[w.value for w in line.words] for line in b.lines] for b in i.scanned.pages[0].blocks])
@@ -194,82 +194,82 @@ on the `scanned` attribute of each `LibraryItem` in the `Library` object you get
 ```py
 >>> i = l.items[0]
 >>> i.scan_images()
->>> for b in i.scanned.pages[0].blocks:                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-...     for line in b.lines: print([w.value for w in line.words])                                                                                                                                                                                                                                                                                                                                                                                                                             
-...     print()                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-...                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-['Index']                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['3D', 'Rotations,', 'see', 'Rotations']                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-['3D', 'alignment,', '283']                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['absolute', 'orientation,', '283,', '515']                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['orthogonal', 'Procrustes,', '283']                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-['3D', 'photography,', '537']                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-['3D', 'video,', '564']                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['Applications,', '5']                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['3D', 'model', 'reconstruction,', '319,327']                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-['3D', 'photography,', '537']                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-['augmented', 'reality,', '287,', '325']                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-['automotive', 'safety,', '5']                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-['background', 'replacement,', '489']                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-['biometrics,', '588']                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-['colorization,', '442']                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-['de-interlacing,', '364']                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-['digital', 'heritage,', '517']                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-['document', 'scanning,', '379']                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['edge', 'editing,', '219']                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['facial', 'animation,', '528']                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-['flash', 'photography,', '434']                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['frame', 'interpolation,', '368']                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-['gaze', 'correction,', '483']                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-['head', 'tracking,', '483']                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-['hole', 'filling,', '457']                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['image', 'restoration,', '169']                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['image', 'search,', '630']                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['industrial,', '5']                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-['intelligent', 'photo', 'editing,', '621']                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['Internet', 'photos,', '327']                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-['location', 'recognition,', '609']                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-['machine', 'inspection,', '5']                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-['match', 'move,', '324']                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-['medical', 'imaging,', '5,', '268,358']                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-['morphing,', '152']                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-['mosaic-based', 'video', 'compression,', '383']                                                                                                                                                                                                                                                                                                                                                                                                                                              
-['non-photorealistic', 'rendering,', '458']                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['Optical', 'character', 'recognition', '(OCR),', '5']                                                                                                                                                                                                                                                                                                                                                                                                                                        
-['panography,', '277']                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-['performance-driven', 'animation,', '209']       
-['photo', 'pop-up,', '623']                                                                                            
-                                                                                                                       
-['Absolute', 'orientation,', '283,', '515']   
+>>> for b in i.scanned.pages[0].blocks:
+...     for line in b.lines: print([w.value for w in line.words])
+...     print()
+...
+['Index']
+
+['3D', 'Rotations,', 'see', 'Rotations']
+['3D', 'alignment,', '283']
+['absolute', 'orientation,', '283,', '515']
+['orthogonal', 'Procrustes,', '283']
+['3D', 'photography,', '537']
+['3D', 'video,', '564']
+
+['Applications,', '5']
+
+['3D', 'model', 'reconstruction,', '319,327']
+['3D', 'photography,', '537']
+['augmented', 'reality,', '287,', '325']
+['automotive', 'safety,', '5']
+['background', 'replacement,', '489']
+['biometrics,', '588']
+['colorization,', '442']
+['de-interlacing,', '364']
+['digital', 'heritage,', '517']
+['document', 'scanning,', '379']
+['edge', 'editing,', '219']
+['facial', 'animation,', '528']
+['flash', 'photography,', '434']
+['frame', 'interpolation,', '368']
+['gaze', 'correction,', '483']
+['head', 'tracking,', '483']
+['hole', 'filling,', '457']
+['image', 'restoration,', '169']
+['image', 'search,', '630']
+['industrial,', '5']
+['intelligent', 'photo', 'editing,', '621']
+['Internet', 'photos,', '327']
+['location', 'recognition,', '609']
+['machine', 'inspection,', '5']
+['match', 'move,', '324']
+['medical', 'imaging,', '5,', '268,358']
+['morphing,', '152']
+['mosaic-based', 'video', 'compression,', '383']
+['non-photorealistic', 'rendering,', '458']
+['Optical', 'character', 'recognition', '(OCR),', '5']
+['panography,', '277']
+['performance-driven', 'animation,', '209']
+['photo', 'pop-up,', '623']
+
+['Absolute', 'orientation,', '283,', '515']
 ['Active', 'appearance', 'model', '(AAM),598']
-['Active', 'contours,', '238']                                        
-['Active', 'illumination,', '512']       
-['Active', 'rangefinding,', '512']                                                                                                                                                                                                             
+['Active', 'contours,', '238']
+['Active', 'illumination,', '512']
+['Active', 'rangefinding,', '512']
 ['Active', 'shape', 'model', '(ASM),', '243,598']
-['Activity', 'recognition,', '534']                                                                         
-['Adaptive', 'smoothing,', '111']    
-['Affine', 'transforms,', '34,37']                                  
+['Activity', 'recognition,', '534']
+['Adaptive', 'smoothing,', '111']
+['Affine', 'transforms,', '34,37']
 ['Affinities', '(segmentation),', '260']
-['normalizing,', '262']                                    
-['Algebraic', 'multigrid,', '254']            
-['Algorithms']                                
-['testing,', 'viii']                        
-['Aliasing,', '69,', '417']                                           
-['Alignment,', 'see', 'Image', 'alignment']                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-['Alpha']                                     
-['opacity,', '93']                            
-['pre-mulupled,', '93']                                              
-['Alpha', 'matte,', '93']                                             
-['Ambient', 'illumination,', '58']                                  
+['normalizing,', '262']
+['Algebraic', 'multigrid,', '254']
+['Algorithms']
+['testing,', 'viii']
+['Aliasing,', '69,', '417']
+['Alignment,', 'see', 'Image', 'alignment']
+['Alpha']
+['opacity,', '93']
+['pre-mulupled,', '93']
+['Alpha', 'matte,', '93']
+['Ambient', 'illumination,', '58']
 ['Analog', 'to', 'digital', 'conversion', '(ADC),', '68']
-['Anisotropic', 'diffusion,', '111']                       
-['Anisotropic', 'filtering,', '148']                                                                                                                                                                                                           
+['Anisotropic', 'diffusion,', '111']
+['Anisotropic', 'filtering,', '148']
 ['Anti-aliasing', 'filter,', '70,', '417']
-['Aperture,', '62']                         
-['Aperture', 'problem,', '347'] 
+['Aperture,', '62']
+['Aperture', 'problem,', '347']
 ```
 
 A naive approach can work with these to create the labels, but it helps to use geometry for c(l)ues.
@@ -278,7 +278,7 @@ A naive approach can work with these to create the labels, but it helps to use g
 >>> for b in i.scanned.pages[0].blocks:
 ...     for line in b.lines: print([(w.value, w.geometry) for w in line.words])
 ...     print()
-... 
+...
 [('Index', ((0.1044921875, 0.115234375), (0.2236328125, 0.146484375)))]
 
 [('3D', ((0.103515625, 0.2265625), (0.130859375, 0.2421875))), ('Rotations,', ((0.1318359375, 0.224609375), (0.212890625, 0.2421875))), ('see', ((0.212890625, 0.2265625), (0.244140625, 0.2412109375))), ('Rotations', ((0.2451171875, 0.2255859375), (0.3232421875, 0.2392578125)))]

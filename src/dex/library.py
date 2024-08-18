@@ -44,7 +44,9 @@ class Library:
     def from_shelves(cls, shelf_dirs: list[Path], parallel: bool = False) -> Library:
         if parallel:
             shelf_items = batch_multiprocess_with_return(
-                function_list=[partial(LibraryItem.from_shelf, sd) for sd in shelf_dirs]
+                function_list=[
+                    partial(LibraryItem.from_shelf, sd) for sd in shelf_dirs
+                ],
             )
         else:
             shelf_items = [LibraryItem.from_shelf(sd) for sd in shelf_dirs]
@@ -98,7 +100,7 @@ class LibraryItem:
             batch_multiprocess(dewarp_funcs)
         # Sort so that the scanned results will also be sorted
         dewarped_images = sorted(  # noqa: F841
-            [dewarped_path(p) for p in item_images if has_been_dewarped(p)]
+            [dewarped_path(p) for p in item_images if has_been_dewarped(p)],
         )
         unfixed = [p for p in item_images if not has_been_dewarped(p)]
         if any(unfixed):
