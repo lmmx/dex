@@ -66,7 +66,7 @@ Library of 6 books
 'Computer Vision - Algorithms And Applications'
 >>> l.items[0].metadata.first_author
 'Richard Szeliski'
->>> l.items[0].metadata.first_author_surname
+>>> l.items[0].metadata.first_author.surname
 'Szeliski'
 ```
 
