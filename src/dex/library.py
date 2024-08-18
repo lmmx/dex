@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from functools import partial
+from functools import cached_property, partial
 from pathlib import Path
 
-from pydantic import BaseModel, DirectoryPath, ValidationError
+from pydantic import BaseModel, DirectoryPath, FilePath, ValidationError
 
 from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata, isbn_ta
@@ -44,11 +43,15 @@ class Library(BaseModel):
         return sorted(self.items, key=LibraryItem._sort_by)
 
 
-@dataclass
-class LibraryItem:
+class LibraryItem(BaseModel):
     metadata: BookMetadata
-    shelf: Path | None
+    shelf: Path
     # scanned: None
+
+    @cached_property
+    def images(self) -> list[FilePath]:
+        image_suffixes = ".png .jpg .jpeg".split()
+        return list(filter(lambda p: p.suffix in image_suffixes, self.shelf.iterdir()))
 
     @classmethod
     def from_shelf(cls, shelf_dir: Path) -> LibraryItem | None:
@@ -63,24 +66,22 @@ class LibraryItem:
             metadata = get_isbn_metadata(isbn_code)
             return cls(metadata=metadata, shelf=shelf_dir)
 
-    def scan_images(self) -> None:
+    def dewarp_images(self) -> None:
         """
         Save dewarped versions of the images for this item if any have not been made
         yet. If any can't be dewarped, warn the user but continue anyway.
 
         Scan the text in the images into the :attr:`scanned` attribute.
         """
-        image_suffixes = ".png .jpg .jpeg".split()
-        item_images = [p for p in self.shelf.iterdir() if p.suffix in image_suffixes]
-        item_images_to_dewarp = [p for p in item_images if not has_been_dewarped(p)]
+        item_images_to_dewarp = [p for p in self.images if not has_been_dewarped(p)]
         dewarp_funcs = [partial(dewarp_and_save, p) for p in item_images_to_dewarp]
         if dewarp_funcs:
             batch_multiprocess(dewarp_funcs)
         # Sort so that the scanned results will also be sorted
         dewarped_images = sorted(  # noqa: F841
-            [dewarped_path(p) for p in item_images if has_been_dewarped(p)],
+            [dewarped_path(p) for p in self.images if has_been_dewarped(p)],
         )
-        unfixed = [p for p in item_images if not has_been_dewarped(p)]
+        unfixed = [p for p in self.images if not has_been_dewarped(p)]
         if any(unfixed):
             logger.warning(f"Failed to dewarp all images for item {self.shelf.stem}")
             logger.info(f"Undewarped images: {unfixed}")
