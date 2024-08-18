@@ -10,7 +10,6 @@ from .dewarping import dewarp_and_save
 from .isbn_utils import BookMetadata, get_isbn_metadata
 from .log_utils import Console
 from .multiproc_utils import batch_multiprocess, batch_multiprocess_with_return
-from .ocr_utils import scan_text_in_images
 from .path_utils import dewarped_path, has_been_dewarped, shelves_path
 
 __all__ = ["load_library"]
@@ -101,16 +100,17 @@ class LibraryItem(IndexedItem):
         dewarp_funcs = [partial(dewarp_and_save, p) for p in item_images_to_dewarp]
         if dewarp_funcs:
             batch_multiprocess(dewarp_funcs)
-        dewarped_images = sorted(
+        # Sort so that the scanned results will also be sorted
+        dewarped_images = sorted(  # noqa: F841
             [dewarped_path(p) for p in item_images if has_been_dewarped(p)]
-        )  # Sort so that the scanned results will also be sorted
+        )
         unfixed = [p for p in item_images if not has_been_dewarped(p)]
         if any(unfixed):
             logger.warning(f"Failed to dewarp all images for item {self.shelf.stem}")
             logger.info(f"Undewarped images: {unfixed}")
         else:
             logger.debug(f"Dewarped all images for item {self.shelf.stem}")
-        self.scanned = scan_text_in_images(dewarped_images, layoutlm=layoutlm)
+        self.scanned = []  # Removed LayoutLMv3 capabilities here
         return
 
     def _sortable_metadata(self) -> tuple[str, str]:

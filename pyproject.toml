@@ -1,18 +1,36 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
-build-backend = "setuptools.build_meta"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
-[tool.isort]
-profile = "black"
+[project]
+name = "dex"
+version = "1.0.0"
+description = "Textbook indexer"
+authors = [
+    { name = "Louis Maddox", email = "louismmx@gmail.com" },
+]
+dependencies = [
+    "pydantic>=2.8.2",
+    "gitpython>=3.1.43",
+    "isbnlib>=3.10.14",
+    "more-itertools>=10.4.0",
+    "page-dewarp>=0.1.5",
+    "tqdm>=4.66.5",
+]
+requires-python = ">=3.10"
+readme = "README.md"
 
-[tool.coverage.run]
-parallel = true
-branch = true
-source = ["range_streams"]
+[project.license]
+text = "MIT"
 
-[tool.coverage.paths]
-source = ["src", ".tox/*/site-packages"]
+[project.urls]
+Homepage = "https://github.com/lmmx/dex"
+Repository = "https://github.com/lmmx/dex.git"
 
-[tool.coverage.report]
-show_missing = true
-skip_covered = true
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+test = [
+    "pytest>=8.3.2",
+]

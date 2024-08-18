@@ -3,7 +3,7 @@ r"""
 
 from .library import load_library
 
-__all__ = ["library"]
+__all__ = ["load_library"]
 
 __author__ = "Louis Maddox"
 __license__ = "MIT"
