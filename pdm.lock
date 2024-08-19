@@ -5,7 +5,7 @@
 groups = ["default", "surya", "test"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:5f29b84245bbe5a4483e94eb3ebbfe8d28b29b7d8bef1b03a9a1e7c0450c3a45"
+content_hash = "sha256:e1372b26f00c53e83d8e0a588c658bb29fe5f107fa70c1af3d9cdc67e515c578"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -177,6 +177,20 @@ marker = "python_version < \"3.11\""
 files = [
     {file = "exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b"},
     {file = "exceptiongroup-1.2.2.tar.gz", hash = "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc"},
+]
+
+[[package]]
+name = "fieldrouter"
+version = "1.0.1"
+requires_python = ">=3.10"
+summary = "Data model validation for nested data routes"
+groups = ["default"]
+dependencies = [
+    "pydantic>=2.8.2",
+]
+files = [
+    {file = "fieldrouter-1.0.1-py3-none-any.whl", hash = "sha256:cbae97a024bab52b09b57a13ec4c6684884e56b584068d00ff07bce3991e749c"},
+    {file = "fieldrouter-1.0.1.tar.gz", hash = "sha256:e32e49a21f316365b746f1cd8279f370f51b3c9c0d06a09cf05dd8e3a1196ac6"},
 ]
 
 [[package]]

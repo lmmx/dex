@@ -62,20 +62,25 @@ class Book(BaseModel):
         return (self.metadata.first_author.surname, self.metadata.title)
 
 
-class Shelf(RootModel):
-    root: Path
+class Shelf(BaseModel):
+    top: Path
 
+    def __repr__(self) -> str:
+        return f".../{self.top.name}"
+
+    @computed_field
     @property
     def dewarped_dir(self) -> Path:
-        return self.root / "dewarped"
+        return self.top / "dewarped"
 
+    @computed_field
     @property
     def surya_ocr_results(self) -> Path:
         return self.dewarped_dir / "results" / "surya" / "results.json"
 
     def iter_images(self, dewarped=False) -> Iterator[Photo] | Iterator[Dewarped]:
         """A more structured alternative to iterating over file extensions."""
-        source_dir = self.dewarped_dir if dewarped else self.root
+        source_dir = self.dewarped_dir if dewarped else self.top
         if source_dir.exists():
             for path in source_dir.iterdir():
                 with suppress(ValidationError):

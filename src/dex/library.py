@@ -5,7 +5,7 @@ from typing import Iterator
 
 from pydantic import ValidationError
 
-from .data_model import Book, Library, Shelving
+from .data_model import Book, Library, Shelf, Shelving
 from .isbn_utils import get_isbn_metadata, isbn_ta
 from .log_utils import Console
 
@@ -31,4 +31,4 @@ def take_books_from_shelves(shelves: list[Path]) -> Iterator[Book]:
             logger.warning(f"Could not detect ISBN in {dir_name=} (omitting)")
         else:
             metadata = get_isbn_metadata(isbn_code)
-            yield Book(metadata=metadata, shelf=shelf_dir)
+            yield Book(metadata=metadata, shelf=Shelf(top=shelf_dir))
