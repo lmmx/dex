@@ -10,6 +10,7 @@ from pydantic import (
     DirectoryPath,
     RootModel,
     ValidationError,
+    computed_field,
 )
 
 from ..isbn_utils import BookMetadata
@@ -44,6 +45,11 @@ class Book(BaseModel):
     shelf: Shelf
     # scanned: None
 
+    @computed_field
+    @property
+    def has_ocr(self) -> bool:
+        return self.shelf.surya_ocr_results.exists()
+
     @cached_property
     def images(self) -> list[Photo]:
         return list(self.shelf.iter_images(dewarped=False))
@@ -62,6 +68,10 @@ class Shelf(RootModel):
     @property
     def dewarped_dir(self) -> Path:
         return self.root / "dewarped"
+
+    @property
+    def surya_ocr_results(self) -> Path:
+        return self.dewarped_dir / "results" / "surya" / "results.json"
 
     def iter_images(self, dewarped=False) -> Iterator[Photo] | Iterator[Dewarped]:
         """A more structured alternative to iterating over file extensions."""
