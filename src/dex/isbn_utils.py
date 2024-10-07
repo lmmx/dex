@@ -35,7 +35,7 @@ class BookMetadata(BaseModel):
 
     def __repr__(self) -> str:
         return (
-            f"'\N{OPEN BOOK}: {self.first_author.surname} ({self.year}) {self.title}'"
+            f"'\N{{OPEN BOOK}}: {self.first_author.surname} ({self.year}) {self.title}'"
         )
 
 
