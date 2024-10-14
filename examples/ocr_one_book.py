@@ -1,9 +1,6 @@
 from pathlib import Path
 
 from dex import load_library
-from dex.data_model.shelving import Book
-from dex.data_model.surya import Index
-from dex.isbn_utils import BookMetadata
 from fieldrouter import Routing, RoutingModel
 
 library = load_library(n=1)
