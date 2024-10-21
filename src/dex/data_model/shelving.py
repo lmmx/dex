@@ -3,12 +3,11 @@ from __future__ import annotations
 from contextlib import suppress
 from functools import cached_property
 from pathlib import Path
-from typing import Iterator
+from collections.abc import Iterator
 
 from pydantic import (
     BaseModel,
     DirectoryPath,
-    RootModel,
     ValidationError,
     computed_field,
 )

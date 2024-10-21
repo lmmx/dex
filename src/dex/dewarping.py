@@ -43,7 +43,7 @@ def dewarp_images(book: Book) -> None:
         batch_multiprocess(dewarp_funcs)
     # Sort so that the scanned results will also be sorted
     dewarped_images = sorted(  # noqa: F841
-        [img.dewarped_path for img in book.images if img.has_been_dewarped]
+        [img.dewarped_path for img in book.images if img.has_been_dewarped],
     )
     unfixed = [img for img in book.images if not img.has_been_dewarped]
     if any(unfixed):
