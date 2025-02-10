@@ -3,12 +3,11 @@ from __future__ import annotations
 from contextlib import suppress
 from functools import cached_property
 from pathlib import Path
-from typing import Iterator
+from collections.abc import Iterator
 
 from pydantic import (
     BaseModel,
     DirectoryPath,
-    RootModel,
     ValidationError,
     computed_field,
 )
@@ -33,7 +32,7 @@ class Library(BaseModel):
 
     def __repr__(self):
         n = len(self.items)
-        return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
+        return f"Library of {n} book{'s'[: n - 1]}" if n else "Empty library"
 
     @property
     def sorted_items(self) -> list[Book]:
