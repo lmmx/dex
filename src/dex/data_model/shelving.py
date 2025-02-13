@@ -32,7 +32,7 @@ class Library(BaseModel):
 
     def __repr__(self):
         n = len(self.items)
-        return f"Library of {n} book{'s'[:n-1]}" if n else "Empty library"
+        return f"Library of {n} book{'s'[: n - 1]}" if n else "Empty library"
 
     @property
     def sorted_items(self) -> list[Book]:
