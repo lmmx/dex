@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from pydantic import BaseModel, model_validator
 
 __all__ = ["OCRLine", "IndexPage", "Index"]

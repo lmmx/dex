@@ -10,15 +10,15 @@ authors = [
   {name = "Louis Maddox", email = "louismmx@gmail.com"}
 ]
 dependencies = [
-    "pydantic>=2.8.2",
-    "gitpython>=3.1.43",
-    "isbnlib>=3.10.14",
-    "more-itertools>=10.4.0",
-    "page-dewarp>=0.1.5",
-    "tqdm>=4.66.5",
-    "pydantic-extra-types>=2.9.0",
-    "appdirs>=1.4.4",
-    "fieldrouter>=1.0.1",
+  "pydantic>=2.8.2",
+  "gitpython>=3.1.43",
+  "isbnlib>=3.10.14",
+  "more-itertools>=10.4.0",
+  "page-dewarp>=0.1.5",
+  "tqdm>=4.66.5",
+  "pydantic-extra-types>=2.9.0",
+  "appdirs>=1.4.4",
+  "fieldrouter>=1.0.1"
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -26,14 +26,18 @@ readme = "README.md"
 [project.license]
 text = "MIT"
 
+[project.optional-dependencies]
+surya = [
+  "surya-ocr>=0.5.0"
+]
+dev = [
+  "pre-commit>=4.1.0"
+]
+
 [project.urls]
 Homepage = "https://github.com/lmmx/dex"
 Repository = "https://github.com/lmmx/dex.git"
 
-[project.optional-dependencies]
-surya = [
-    "surya-ocr>=0.5.0",
-]
 [tool.pdm]
 distribution = true
 
