@@ -6,7 +6,7 @@ from pydantic_extra_types.isbn import ISBN
 
 from .caching import ISBNCache
 
-__all__ = ["isbn_ta", "AuthorName", "BookMetadata", "get_isbn_metadata"]
+__all__ = ["AuthorName", "BookMetadata", "get_isbn_metadata", "isbn_ta"]
 
 
 isbn_ta = TypeAdapter(ISBN)

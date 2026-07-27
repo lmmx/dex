@@ -51,4 +51,3 @@ def dewarp_images(book: Book) -> None:
         logger.info(f"Undewarped images: {unfixed}")
     else:
         logger.debug(f"Dewarped all images for item {book.shelf.stem}")
-    return

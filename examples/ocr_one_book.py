@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from dex import load_library
 from fieldrouter import Routing, RoutingModel
+
+from dex import load_library
 
 library = load_library(n=1)
 assert len(library.items) == 1, f"Library is {library}"

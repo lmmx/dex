@@ -3,14 +3,14 @@ from .shelving import Book, Library, Shelf, Shelving
 from .surya import Index, IndexPage, OCRLine
 
 __all__ = [
-    "Shelving",
-    "Library",
     "Book",
-    "Shelf",
-    "Image",
-    "Photo",
     "Dewarped",
-    "OCRLine",
-    "IndexPage",
+    "Image",
     "Index",
+    "IndexPage",
+    "Library",
+    "OCRLine",
+    "Photo",
+    "Shelf",
+    "Shelving",
 ]
