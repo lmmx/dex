@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import suppress
 from functools import cached_property
 from pathlib import Path
-from collections.abc import Iterator
 
 from pydantic import (
     BaseModel,
@@ -16,7 +16,7 @@ from ..isbn_utils import BookMetadata
 from ..path_utils import shelves_path
 from .images import Dewarped, Photo
 
-__all__ = ["Shelving", "Library", "Book", "Shelf"]
+__all__ = ["Book", "Library", "Shelf", "Shelving"]
 
 
 class Shelving(BaseModel):

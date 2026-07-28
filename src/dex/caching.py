@@ -23,4 +23,3 @@ class ISBNCache(BaseModel):
     @model_validator(mode="after")
     def ensure_dir(self) -> None:
         self.parent_dir.mkdir(parents=True, exist_ok=True)
-        return

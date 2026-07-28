@@ -1,6 +1,6 @@
 from pydantic import BaseModel, model_validator
 
-__all__ = ["OCRLine", "IndexPage", "Index"]
+__all__ = ["Index", "IndexPage", "OCRLine"]
 
 
 class OCRLine(BaseModel):
