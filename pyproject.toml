@@ -7,7 +7,7 @@ name = "dex"
 version = "1.0.0"
 description = "Textbook indexer"
 authors = [
-  {name = "Louis Maddox", email = "louismmx@gmail.com"}
+  { name = "Louis Maddox", email = "louismmx@gmail.com" }
 ]
 dependencies = [
   "pydantic>=2.8.2",
